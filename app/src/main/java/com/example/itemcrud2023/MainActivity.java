@@ -8,25 +8,30 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class MainActivity extends AppCompatActivity {
     private Context mContext;
-    private final String mJSONURLString = "http://192.168.1.11:8000/api/item/";
-    private final String imgUrl = "http://192.168.1.11:8000/";
+    private final String mJSONURLString = "http://172.34.97.101:8000/api/item/";
+    private final String imgUrl = "http://172.34.97.101:8000/";
 
 
     @Override
@@ -43,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         EditText itemId = findViewById(R.id.item_no);
 
         ImageView imageView  =  findViewById(R.id.imageView);
+         Button delete =  findViewById(R.id.btnDelete);
         btnSearch.setOnClickListener(view -> {
 
             String urlString = mJSONURLString+itemId.getText();
@@ -58,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     null,
                     response -> {
                         Log.i("json",String.valueOf(response));
-                        try{
+                        try {
                             String description = response.getString("description");
                             String item_cost = response.getString("cost_price");
                             String item_sell = response.getString("sell_price");
@@ -81,6 +87,47 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("error :",error.getMessage());
                     });
 
+            // Add JsonObjectRequest to the RequestQueue
+            requestQueue.add(jsonObjectRequest);
+        });
+        delete.setOnClickListener(view -> {
+            // Empty the TextView
+            // mTextView.setText("");
+            // item_id = itemId.getText().toString();
+            //mJSONURLString +=item_id;
+            // mJSONURLString = "delete/" + itemId.getText();
+            String urlString = mJSONURLString+itemId.getText();
+            Log.i("url",urlString);
+
+            // Initialize a new RequestQueue instance
+            RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+
+            // Initialize a new JsonObjectRequest instance
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                    Request.Method.DELETE,
+                    urlString,
+                    null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            // Do something with response
+                            // Process the JSON
+                            try{
+                                String status = response.getString("status");
+                                Toast.makeText(getApplicationContext(),"Item Deleted", Toast.LENGTH_LONG).show();
+                            }catch (JSONException e){
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener(){
+                        @Override
+                        public void onErrorResponse(VolleyError error){
+                            // Do something when error occurred
+                            Log.e("error :",error.getMessage());
+                        }
+                    }
+            ) ;
             // Add JsonObjectRequest to the RequestQueue
             requestQueue.add(jsonObjectRequest);
         });
