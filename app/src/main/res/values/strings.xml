@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">itemCrud2023</string>
+    <string name="item_no">item no</string>
+    <string name="description">description</string>
+    <string name="save">save</string>
+    <string name="search">search</string>
+    <string name="delete">delete</string>
+    <string name="update">update</string>
+    <string name="view">view</string>
+    <string name="choose_image">Choose Image</string>
+
+</resources>
