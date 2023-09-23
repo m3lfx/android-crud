@@ -49,8 +49,8 @@ import java.net.URI;
 @SuppressWarnings("depracation")
 public class MainActivity extends AppCompatActivity {
     private Context mContext;
-    private final String mJSONURLString = "http://172.34.97.101:8000/api/item";
-    private final String imgUrl = "http://172.34.97.101:8000/";
+    private final String mJSONURLString = "http://192.168.1.11:8000/api/item";
+    private final String imgUrl = "http://192.168.1.11:8000/storage/";
     private Bitmap bitmap;
 
     public ImageView imageView;
@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         ImageView imageView =  findViewById(R.id.imageView);
         Button delete =  findViewById(R.id.btnDelete);
         Button save = findViewById(R.id.save);
+        Button btnUpdate =  findViewById(R.id.update);
         Button buttonChoose = findViewById(R.id.buttonChoose);
         startActivityIntent = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         btnSearch.setOnClickListener(view -> {
-            String urlString = mJSONURLString+itemId.getText();
+            String urlString = mJSONURLString+"/"+itemId.getText();
             Log.i("url","url"+ urlString);
             // Initialize a new RequestQueue instance
             RequestQueue requestQueue = Volley.newRequestQueue(mContext);
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
             // item_id = itemId.getText().toString();
             //mJSONURLString +=item_id;
             // mJSONURLString = "delete/" + itemId.getText();
-            String urlString = mJSONURLString+itemId.getText();
+            String urlString = mJSONURLString+"/"+itemId.getText();
             Log.i("url",urlString);
 
             // Initialize a new RequestQueue instance
@@ -218,7 +219,8 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onErrorResponse(VolleyError error){
                                 // Do something when error occurred
-                                Log.e("error :",error.getMessage());
+                                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+                                Log.i("error", error.toString());
                             }
                         });
                 jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
@@ -226,6 +228,52 @@ public class MainActivity extends AppCompatActivity {
                         DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                         DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
+                // Add JsonObjectRequest to the RequestQueue
+                requestQueue.add(jsonObjectRequest);
+            }
+        });
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String urlString = mJSONURLString+"/"+itemId.getText();
+                Log.i("url:", urlString);
+                JSONObject jsonItem = new JSONObject();
+                try {
+                    jsonItem.put("description", desc.getText());
+                    jsonItem.put("sell_price", sell.getText());
+                    jsonItem.put("cost_price", cost.getText());
+                    jsonItem.put("img_path",imgName.getText().toString().trim());
+                    jsonItem.put("uploads", getStringImage(bitmap));
+                    Log.d("tag", jsonItem.toString(4));
+                }catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                // Initialize a new RequestQueue instance
+                RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+                // Initialize a new JsonObjectRequest instance
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                        Request.Method.PUT,
+                        urlString,
+                        jsonItem,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try{
+                                    String status = response.getString("status");
+                                    Toast.makeText(getApplicationContext(),status, Toast.LENGTH_LONG).show();
+
+                                }catch (JSONException e){
+                                    e.printStackTrace();
+                                }
+                            }
+                        },
+                        new Response.ErrorListener(){
+                            @Override
+                            public void onErrorResponse(VolleyError error){
+                                // Do something when error occurred
+                                Log.e("error :","not updated");
+                            }
+                        });
                 // Add JsonObjectRequest to the RequestQueue
                 requestQueue.add(jsonObjectRequest);
             }
