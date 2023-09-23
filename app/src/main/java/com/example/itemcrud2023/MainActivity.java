@@ -46,31 +46,17 @@ import java.io.IOException;
 import java.net.URI;
 
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings("depracation")
 public class MainActivity extends AppCompatActivity {
     private Context mContext;
-    private final String mJSONURLString = "http://192.168.1.11:8000/api/item/";
-    private final String imgUrl = "http://192.168.1.11:8000/";
+    private final String mJSONURLString = "http://172.34.97.101:8000/api/item";
+    private final String imgUrl = "http://172.34.97.101:8000/";
     private Bitmap bitmap;
-    private int PICK_IMAGE_REQUEST = 111;
-    private ImageView imageView;
+
+    public ImageView imageView;
+
     private String imagePath;
-    ActivityResultLauncher<Intent> startActivityIntent = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    Intent data = result.getData();
-                    if (data != null) {
-                        Uri filePath = data.getData();
-                        Log.i("file", "file://" + filePath.toString());
-                        Log.i("content", filePath.getPath().toString());
-                        Log.i("pic", new File(filePath.getPath()).toString());
-
-                        Glide.with(mContext).load(data.getData()).into(imageView);
-
-                    }
-                }
-            });
+    private  ActivityResultLauncher<Intent> startActivityIntent;
 
 
     @Override
@@ -78,28 +64,46 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = getApplicationContext();
-
         Button btnSearch = findViewById(R.id.search);
-
         EditText desc = findViewById(R.id.description);
         EditText cost = findViewById(R.id.cost);
         EditText sell = findViewById(R.id.sell);
         EditText itemId = findViewById(R.id.item_no);
         EditText imgName =  findViewById(R.id.imageName);
-
-        ImageView imageView  =  findViewById(R.id.imageView);
-         Button delete =  findViewById(R.id.btnDelete);
+        ImageView imageView =  findViewById(R.id.imageView);
+        Button delete =  findViewById(R.id.btnDelete);
         Button save = findViewById(R.id.save);
         Button buttonChoose = findViewById(R.id.buttonChoose);
+        startActivityIntent = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        Log.i("result", result.toString());
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                            Intent data = result.getData();
+                            if (data != null) {
+                                Uri filePath = data.getData();
+                                Log.i("file", "file://" + filePath.toString());
+                                Log.i("content", filePath.getPath().toString());
+                                Log.i("pic", new File(filePath.getPath()).toString());
+                                try {
+                                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                Picasso.get().setLoggingEnabled(true);
+                            Picasso.get().load(filePath).fit().centerCrop().into(imageView);
+                            }
+                        }
+                    }
+                });
 
         btnSearch.setOnClickListener(view -> {
-
             String urlString = mJSONURLString+itemId.getText();
             Log.i("url","url"+ urlString);
-
             // Initialize a new RequestQueue instance
             RequestQueue requestQueue = Volley.newRequestQueue(mContext);
-
             // Initialize a new JsonObjectRequest instance
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET,
@@ -204,9 +208,7 @@ public class MainActivity extends AppCompatActivity {
                                 try{
                                     String status = response.getString("status");
                                     Toast.makeText(getApplicationContext(),"Item saved", Toast.LENGTH_LONG).show();
-                                    String description = response.getString("description");
-                                    String item_cost = response.getString("cost_price");
-                                    String item_sell = response.getString("sell_price");
+
                                 }catch (JSONException e){
                                     e.printStackTrace();
                                 }
@@ -216,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onErrorResponse(VolleyError error){
                                 // Do something when error occurred
-                                Log.e("error :","not saved");
+                                Log.e("error :",error.getMessage());
                             }
                         });
                 jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
@@ -235,16 +237,12 @@ public class MainActivity extends AppCompatActivity {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
 //                intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-                intent.putExtra("return-data", true);
-
                 startActivityIntent.launch(Intent.createChooser(intent, "Select Picture"));
 //                Intent galleryIntent= new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 //                startActivityIntent.launch(galleryIntent);
             }
 
         });
-
-
     }
 
     public String getStringImage(Bitmap bmp){
