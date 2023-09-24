@@ -44,16 +44,18 @@ public class myAdapter extends RecyclerView.Adapter<myAdapter.ViewHolder> {
         holder.txtdescription.setText(listData.getDescription());
         holder.txtsell_price.setText(listData.getSell_price());
 
-//        holder.imageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent=new Intent(mContext, DetailView.class);
-//                intent.putExtra("name",listData.getDescription());
-//                intent.putExtra("imageurl",urlString + listData.getImage());
-//                mContext.startActivity(intent);
-//
-//            }
-//        });
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent=new Intent(mContext, DetailView.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("name",listData.getDescription());
+                intent.putExtra("imageurl",urlString + listData.getImage());
+                mContext.startActivity(intent);
+
+            }
+        });
     }
 
     @Override
