@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 //import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Context;
 //import android.graphics.Bitmap;
 import android.content.Intent;
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         Button save = findViewById(R.id.save);
         Button btnUpdate =  findViewById(R.id.update);
         Button buttonChoose = findViewById(R.id.buttonChoose);
+        Button btnView =  findViewById(R.id.view_button);
         startActivityIntent = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -300,8 +302,16 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-    }
+        btnView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, ListItemActivity.class);
+//                intent.putExtra("access_token",accessToken);
+                startActivity(intent);
+            }
 
+        });
+    }
     public String getStringImage(Bitmap bmp){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -309,7 +319,6 @@ public class MainActivity extends AppCompatActivity {
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;
     }
-
 
     private void showFileChooser() {
         Intent intent = new Intent();

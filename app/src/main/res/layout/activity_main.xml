@@ -83,8 +83,8 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/search"
         android:layout_alignTop="@+id/view_button"
-        android:layout_marginStart="-4dp"
-        android:layout_marginTop="-36dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="-1dp"
         android:text="@string/save" />
 
     <Button
@@ -104,8 +104,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="170dp"
-        android:layout_marginTop="565dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="166dp"
+        android:layout_marginTop="595dp"
         android:text="@string/update" />
 
     <Button
@@ -115,8 +116,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginEnd="148dp"
-        android:layout_marginBottom="42dp"
+        android:layout_marginEnd="49dp"
+        android:layout_marginBottom="91dp"
         android:text="@string/view"
         tools:ignore="RelativeOverlap" />
 
@@ -136,8 +137,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="64dp"
-        android:layout_marginBottom="132dp"
+        android:layout_marginStart="59dp"
+        android:layout_marginBottom="205dp"
         tools:ignore="ContentDescription" />
 
     <Button
