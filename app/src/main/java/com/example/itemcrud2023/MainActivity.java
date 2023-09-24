@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     public ImageView imageView;
 
     private String imagePath;
+    private String fileName;
     private  ActivityResultLauncher<Intent> startActivityIntent;
 
 
@@ -85,11 +86,16 @@ public class MainActivity extends AppCompatActivity {
                             Intent data = result.getData();
                             if (data != null) {
                                 Uri filePath = data.getData();
+                                String path = filePath.getPath();
+
+                                 fileName = path.substring(path.lastIndexOf("/")+1);
+//                                fileName = filePath.getLastPathSegment();
                                 Log.i("file", "file://" + filePath.toString());
                                 Log.i("content", filePath.getPath().toString());
                                 Log.i("pic", new File(filePath.getPath()).toString());
                                 try {
                                     bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -188,7 +194,8 @@ public class MainActivity extends AppCompatActivity {
                     jsonItem.put("description", desc.getText());
                     jsonItem.put("sell_price", sell.getText());
                     jsonItem.put("cost_price", cost.getText());
-                    jsonItem.put("img_path",imgName.getText().toString().trim());
+//                    jsonItem.put("img_path",imgName.getText().toString().trim());
+                    jsonItem.put("img_path",fileName);
                     jsonItem.put("uploads", getStringImage(bitmap));
                     //Log.i("url","url"+ jsonItem.toString());
                     Log.d("tag", jsonItem.toString(4));
@@ -208,7 +215,8 @@ public class MainActivity extends AppCompatActivity {
                             public void onResponse(JSONObject response) {
                                 try{
                                     String status = response.getString("status");
-                                    Toast.makeText(getApplicationContext(),"Item saved", Toast.LENGTH_LONG).show();
+                                    String message = response.getString("message");
+                                    Toast.makeText(getApplicationContext(),message, Toast.LENGTH_LONG).show();
 
                                 }catch (JSONException e){
                                     e.printStackTrace();
@@ -242,7 +250,8 @@ public class MainActivity extends AppCompatActivity {
                     jsonItem.put("description", desc.getText());
                     jsonItem.put("sell_price", sell.getText());
                     jsonItem.put("cost_price", cost.getText());
-                    jsonItem.put("img_path",imgName.getText().toString().trim());
+
+                    jsonItem.put("img_path",fileName);
                     jsonItem.put("uploads", getStringImage(bitmap));
                     Log.d("tag", jsonItem.toString(4));
                 }catch (JSONException e) {
@@ -259,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(JSONObject response) {
                                 try{
-                                    String status = response.getString("status");
+                                    String status = response.getString("message");
                                     Toast.makeText(getApplicationContext(),status, Toast.LENGTH_LONG).show();
 
                                 }catch (JSONException e){
