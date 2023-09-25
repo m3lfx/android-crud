@@ -6,10 +6,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.ActionBar;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -23,7 +26,9 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ListItemActivity extends AppCompatActivity {
     private static final String urlString = "http://192.168.1.11:8000/api/item";
@@ -38,6 +43,7 @@ public class ListItemActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+
         mContext = getApplicationContext();
 
         rv = (RecyclerView) findViewById(R.id.itemrecyclerview);
@@ -85,14 +91,14 @@ public class ListItemActivity extends AppCompatActivity {
             }
 
         }, error -> Log.e("error :", "cannot get items")) {
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                Map<String, String> params = new HashMap<String, String>();
-//                Intent i=getIntent();
-//                String accessToken=i.getStringExtra("access_token");
-//                params.put("Authorization", "Bearer "+ accessToken);
-//                return params;
-//            }
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> params = new HashMap<String, String>();
+                Intent i=getIntent();
+                String accessToken=i.getStringExtra("access_token");
+                params.put("Authorization", "Bearer "+ accessToken);
+                return params;
+            }
 
 
         };

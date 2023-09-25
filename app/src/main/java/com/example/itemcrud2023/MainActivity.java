@@ -47,7 +47,7 @@ import java.io.IOException;
 import java.net.URI;
 
 
-@SuppressWarnings("depracation")
+
 public class MainActivity extends AppCompatActivity {
     private Context mContext;
     private final String mJSONURLString = "http://192.168.1.11:8000/api/item";
