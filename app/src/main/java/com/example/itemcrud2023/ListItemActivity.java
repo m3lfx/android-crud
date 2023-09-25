@@ -43,9 +43,7 @@ public class ListItemActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-
         mContext = getApplicationContext();
-
         rv = (RecyclerView) findViewById(R.id.itemrecyclerview);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(this));
@@ -54,7 +52,6 @@ public class ListItemActivity extends AppCompatActivity {
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         getItemData();
         swipeContainer.setOnRefreshListener(() -> {
-//            refreshData();
             getItemData();
         });
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -65,12 +62,10 @@ public class ListItemActivity extends AppCompatActivity {
 
     private void getItemData() {
         item_list.clear();
-
         JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET,
                 urlString, null, response -> {
             try {
-                //JSONObject jsonObject=new JSONObject(response);
-                //JSONArray array=jsonObject.getJSONArray("data");
+
                 JSONArray array = response.getJSONArray("data");
                 Log.i("data", array.toString());
                 for (int i = 0; i < array.length(); i++) {
@@ -81,7 +76,6 @@ public class ListItemActivity extends AppCompatActivity {
                             ob.getString("img_path"),
                             ob.getInt("item_id"));
                     item_list.add(listData);
-
                 }
                 adapter = new myAdapter(mContext, item_list);
                 rv.setAdapter(adapter);
@@ -99,8 +93,6 @@ public class ListItemActivity extends AppCompatActivity {
                 params.put("Authorization", "Bearer "+ accessToken);
                 return params;
             }
-
-
         };
         RequestQueue requestQueue = Volley.newRequestQueue(mContext);
         requestQueue.add(jsonRequest);
