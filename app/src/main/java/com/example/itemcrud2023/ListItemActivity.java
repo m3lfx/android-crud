@@ -1,5 +1,6 @@
 package com.example.itemcrud2023;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,13 +32,18 @@ import java.util.List;
 import java.util.Map;
 
 public class ListItemActivity extends AppCompatActivity {
-    private static final String urlString = "http://192.168.1.11:8000/api/item";
+    private static final String urlString = "http://172.34.97.101:4000/api/item";
 
     private List<Item> item_list;
     private RecyclerView rv;
     private myAdapter adapter;
     Context mContext;
     private SwipeRefreshLayout swipeContainer;
+    private SwipeAdapter swipeAdapter;
+    private URL myURL;
+
+    private String accessToken;
+    private AlertDialog.Builder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,19 +83,26 @@ public class ListItemActivity extends AppCompatActivity {
                             ob.getInt("item_id"));
                     item_list.add(listData);
                 }
-                adapter = new myAdapter(mContext, item_list);
-                rv.setAdapter(adapter);
+//                adapter = new myAdapter(mContext, item_list);
+//                swipeAdapter = new SwipeAdapter(mContext, item_list);
+//                rv.setAdapter(adapter);
+                Intent i=getIntent();
+                 accessToken = i.getStringExtra("access_token");
+                swipeAdapter = new SwipeAdapter(mContext, item_list, accessToken);
+                rv.setAdapter(swipeAdapter);
+
                 swipeContainer.setRefreshing(false);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-        }, error -> Log.e("error :", "cannot get items")) {
+        }, error -> Log.e("error :", "cannot get items"))
+        {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> params = new HashMap<String, String>();
                 Intent i=getIntent();
-                String accessToken=i.getStringExtra("access_token");
+                accessToken=i.getStringExtra("access_token");
                 params.put("Authorization", "Bearer "+ accessToken);
                 return params;
             }

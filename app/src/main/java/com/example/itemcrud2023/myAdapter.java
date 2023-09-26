@@ -19,7 +19,7 @@ import java.util.List;
 public class myAdapter extends RecyclerView.Adapter<myAdapter.ViewHolder> {
     private Context mContext;
     private List<Item> list_data;
-    private static final String urlString ="http://192.168.1.11:8000/storage/" ;
+    private static final String urlString ="http://172.34.97.101:8000/storage/" ;
 
     public myAdapter(Context mContext,List<Item> list_data) {
         this.list_data = list_data;

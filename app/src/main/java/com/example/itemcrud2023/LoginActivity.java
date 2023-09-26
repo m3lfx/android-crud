@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button mLogin;
     private EditText mEmail;
     private EditText mPassword;
-    private String mJSONURLString = "http://192.168.1.11:8000/api/login";
+    private String mJSONURLString = "http://172.34.97.101:4000/api/login";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
             }catch (JSONException e) {
                 e.printStackTrace();
             }
+            Log.i("host", mJSONURLString);
             // Initialize a new RequestQueue instance
             RequestQueue requestQueue = Volley.newRequestQueue(mContext);
             // Initialize a new JsonObjectRequest instance
@@ -69,13 +70,10 @@ public class LoginActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     },
-                    new Response.ErrorListener(){
-                        @Override
-                        public void onErrorResponse(VolleyError error){
-                            // Do something when error occurred
-                            Log.i("laravel", "error");
-                            Toast.makeText(getApplicationContext(),"wrong username", Toast.LENGTH_LONG).show();
-                        }
+                    error -> {
+                        // Do something when error occurred
+                        Log.i("laravel", error.getMessage());
+                        Toast.makeText(getApplicationContext(),"wrong username", Toast.LENGTH_LONG).show();
                     }
             );
 

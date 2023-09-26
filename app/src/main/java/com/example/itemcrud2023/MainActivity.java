@@ -50,8 +50,8 @@ import java.net.URI;
 
 public class MainActivity extends AppCompatActivity {
     private Context mContext;
-    private final String mJSONURLString = "http://192.168.1.11:8000/api/item";
-    private final String imgUrl = "http://192.168.1.11:8000/storage/";
+    private final String mJSONURLString = "http://172.34.97.101:8000/api/item";
+    private final String imgUrl = "http://172.34.97.101:8000/storage/";
     private Bitmap bitmap;
 
     public ImageView imageView;
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                     },
                     error -> {
                         // Do something when error occurred
-                        Log.e("error :",error.getMessage());
+//                        Log.e("error :",error.getMessage());
                     });
 
             // Add JsonObjectRequest to the RequestQueue

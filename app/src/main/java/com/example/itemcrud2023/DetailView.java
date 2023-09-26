@@ -13,7 +13,7 @@ import com.squareup.picasso.Picasso;
 public class DetailView extends AppCompatActivity {
     private TextView nametxt;
     private ImageView fullimg;
-    private static final String urlString ="http://192.168.1.11:8000/";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
