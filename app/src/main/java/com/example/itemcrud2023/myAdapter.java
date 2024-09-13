@@ -19,7 +19,7 @@ import java.util.List;
 public class myAdapter extends RecyclerView.Adapter<myAdapter.ViewHolder> {
     private Context mContext;
     private List<Item> list_data;
-    private static final String urlString ="http://172.34.97.101:8000/storage/" ;
+    private static final String urlString ="http://172.34.97.101:4000/storage/" ;
 
     public myAdapter(Context mContext,List<Item> list_data) {
         this.list_data = list_data;
@@ -53,7 +53,6 @@ public class myAdapter extends RecyclerView.Adapter<myAdapter.ViewHolder> {
                 intent.putExtra("name",listData.getDescription());
                 intent.putExtra("imageurl",urlString + listData.getImage());
                 mContext.startActivity(intent);
-
             }
         });
     }

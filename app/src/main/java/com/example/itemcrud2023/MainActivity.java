@@ -50,8 +50,10 @@ import java.net.URI;
 
 public class MainActivity extends AppCompatActivity {
     private Context mContext;
-    private final String mJSONURLString = "http://172.34.97.101:8000/api/item";
-    private final String imgUrl = "http://172.34.97.101:8000/storage/";
+//    private final String mJSONURLString = "http://172.34.97.101:4000/api/item";
+//    private final String imgUrl = "http://172.34.97.101:4000/storage/";
+    private final String mJSONURLString = "http://192.168.1.11:4000/api/item";
+    private final String imgUrl = "http://192.168.1.11:4000/storage/";
     private Bitmap bitmap;
 
     public ImageView imageView;
@@ -266,24 +268,18 @@ public class MainActivity extends AppCompatActivity {
                         Request.Method.PUT,
                         urlString,
                         jsonItem,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try{
-                                    String status = response.getString("message");
-                                    Toast.makeText(getApplicationContext(),status, Toast.LENGTH_LONG).show();
+                        response -> {
+                            try{
+                                String status = response.getString("message");
+                                Toast.makeText(getApplicationContext(),status, Toast.LENGTH_LONG).show();
 
-                                }catch (JSONException e){
-                                    e.printStackTrace();
-                                }
+                            }catch (JSONException e){
+                                e.printStackTrace();
                             }
                         },
-                        new Response.ErrorListener(){
-                            @Override
-                            public void onErrorResponse(VolleyError error){
-                                // Do something when error occurred
-                                Log.e("error :","not updated");
-                            }
+                        error -> {
+                            // Do something when error occurred
+                            Log.e("error :","not updated");
                         });
                 // Add JsonObjectRequest to the RequestQueue
                 requestQueue.add(jsonObjectRequest);

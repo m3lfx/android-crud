@@ -40,14 +40,14 @@ public class SwipeAdapter extends RecyclerView.Adapter<SwipeAdapter.SwipeViewHol
     private List<Item> list_data;
     private String accessToken;
 
-    private String urlString ="http://172.34.97.101:4000/api" ;
+    private String urlString ="http://192.168.1.11:4000/api" ;
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
 //
-    public SwipeAdapter(Context mContext,List<Item> list_data,String accessToken) {
-//         public SwipeAdapter(Context mContext,List<Item> list_data) {
+//    public SwipeAdapter(Context mContext,List<Item> list_data,String accessToken) {
+         public SwipeAdapter(Context mContext,List<Item> list_data) {
         this.list_data = list_data;
         this.mContext = mContext;
-        this.accessToken = accessToken;
+//        this.accessToken = accessToken;
 //        viewBinderHelper.setOpenOnlyOne(true);
     }
     @Override
@@ -99,116 +99,104 @@ public class SwipeAdapter extends RecyclerView.Adapter<SwipeAdapter.SwipeViewHol
             imageView = (ImageView)itemView.findViewById(R.id.imageView);
             swipelayout = itemView.findViewById(R.id.swipelayout);
 
-            urlPhoto = "http://172.34.97.101:4000/storage/" ;
-            txtEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.i("edit",urlString + "/item/"+ list_data.get(getBindingAdapterPosition()).getId()+"/edit");
-                    Toast.makeText(mContext, "edit", Toast.LENGTH_SHORT).show();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getRootView().getContext());
-                    final View dialoglayout =  LayoutInflater.from(view.getRootView().getContext()).inflate(R.layout.fragment_item, null);
-                    final EditText description = (EditText) dialoglayout.findViewById(R.id.item_description);
-                    final EditText cost_price = (EditText) dialoglayout.findViewById(R.id.item_costprice);
-                    final EditText sell_price = (EditText) dialoglayout.findViewById(R.id.item_sellprice);
-                    RequestQueue requestQueue = Volley.newRequestQueue(mContext);
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                            Request.Method.GET,
-                            urlString + "/item/"+ list_data.get(getBindingAdapterPosition()).getId()+"/edit",
-                            null,
-                            response -> {
-                                try{
-                                    Log.i("item:", response.toString());
-                                    String desc = response.getString("description");
-                                    String item_cost = response.getString("cost_price");
-                                    String item_sell = response.getString("sell_price");
-                                    description.setText(desc);
-                                    cost_price.setText(item_cost);
-                                    sell_price.setText(item_sell);
-                                }catch (JSONException e){
-                                    e.printStackTrace();
-                                }
-                            },
-                            error -> {
-                                // Do something when error occurred
-                                Log.e("error :","json");
-                            })
-                            {
-                        @Override
-                        public Map<String, String> getHeaders() {
-                            Map<String, String> params = new HashMap<String, String>();
-                            params.put("Authorization", "Bearer "+ accessToken);
-                            return params;
-                        }
-                    };
-                    // Add JsonObjectRequest to the RequestQueue
-                    requestQueue.add(jsonObjectRequest);
-                    builder.setView(dialoglayout)
-                            .setTitle("Edit Item")
-                            .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                }
-                            })
-                            .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
+            urlPhoto = "http://192.168.1.11:4000/storage/" ;
+            txtEdit.setOnClickListener(view -> {
+                Log.i("edit",urlString + "/item/"+ list_data.get(getBindingAdapterPosition()).getId()+"/edit");
+                Toast.makeText(mContext, "edit", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getRootView().getContext());
+                final View dialoglayout =  LayoutInflater.from(view.getRootView().getContext()).inflate(R.layout.fragment_item, null);
+                final EditText description = (EditText) dialoglayout.findViewById(R.id.item_description);
+                final EditText cost_price = (EditText) dialoglayout.findViewById(R.id.item_costprice);
+                final EditText sell_price = (EditText) dialoglayout.findViewById(R.id.item_sellprice);
+                RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                        Request.Method.GET,
+                        urlString + "/item/"+ list_data.get(getBindingAdapterPosition()).getId()+"/edit",
+                        null,
+                        response -> {
+                            try{
+                                Log.i("item:", response.toString());
+                                String desc = response.getString("description");
+                                String item_cost = response.getString("cost_price");
+                                String item_sell = response.getString("sell_price");
+                                description.setText(desc);
+                                cost_price.setText(item_cost);
+                                sell_price.setText(item_sell);
+                            }catch (JSONException e){
+                                e.printStackTrace();
+                            }
+                        },
+                        error -> {
+                            // Do something when error occurred
+                            Log.e("error :",error.getMessage());
+                        })
+                        {
+                    @Override
+                    public Map<String, String> getHeaders() {
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put("Authorization", "Bearer "+ accessToken);
+                        return params;
+                    }
+                };
+                // Add JsonObjectRequest to the RequestQueue
+                requestQueue.add(jsonObjectRequest);
+                builder.setView(dialoglayout)
+                        .setTitle("Edit Item")
+                        .setNegativeButton("cancel", (dialogInterface, i) -> {
+                        })
+                        .setPositiveButton("ok", (dialogInterface, i) -> {
 
-                                    JSONObject jsonItem = new JSONObject();
-                                    try {
-                                        jsonItem.put("description", description.getText());
-                                        jsonItem.put("sell_price", sell_price.getText());
-                                        jsonItem.put("cost_price", cost_price.getText());
+                            JSONObject jsonItem = new JSONObject();
+                            try {
+                                jsonItem.put("description", description.getText());
+                                jsonItem.put("sell_price", sell_price.getText());
+                                jsonItem.put("cost_price", cost_price.getText());
 
-                                        Log.d("tag", jsonItem.toString(4));
-                                    }catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                    // Initialize a new RequestQueue instance
-                                    RequestQueue requestQueue = Volley.newRequestQueue(mContext);
-                                    // Initialize a new JsonObjectRequest instance
-                                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                                            Request.Method.PUT,
-                                            urlString +"/item/"+list_data.get(getBindingAdapterPosition()).getId(),
-                                            jsonItem,
-                                            new Response.Listener<JSONObject>() {
-                                                @Override
-                                                public void onResponse(JSONObject response) {
-                                                    try{
-                                                        String description = response.getString("description");
-                                                        String item_cost = response.getString("cost_price");
-                                                        String item_sell = response.getString("sell_price");
-                                                        list_data.get(getBindingAdapterPosition()).setDescription(description);
-                                                        list_data.get(getBindingAdapterPosition()).setSell_price(item_sell);
-                                                        list_data.get(getBindingAdapterPosition()).setCost_price(item_cost);
-                                                        notifyItemChanged(getBindingAdapterPosition());
-                                                        notifyDataSetChanged();
-                                                        Log.i("item" , "data"+list_data);
-                                                        Toast.makeText(mContext,"Item Updated", Toast.LENGTH_LONG).show();
-                                                    }catch (JSONException e){
-                                                        e.printStackTrace();
-                                                    }
-                                                }
-                                            },
-                                            error -> {
-                                                // Do something when error occurred
-                                                Log.e("error :","update failed");
-                                            })
-                                    {
-                                        @Override
-                                        public Map<String, String> getHeaders() {
-                                            Map<String, String> params = new HashMap<String, String>();
-                                            params.put("Authorization", "Bearer " + accessToken);
-                                            return params;
+                                Log.d("tag", jsonItem.toString(4));
+                            }catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            // Initialize a new RequestQueue instance
+                            RequestQueue requestQueue1 = Volley.newRequestQueue(mContext);
+                            // Initialize a new JsonObjectRequest instance
+                            JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(
+                                    Request.Method.PUT,
+                                    urlString +"/item/"+list_data.get(getBindingAdapterPosition()).getId(),
+                                    jsonItem,
+                                    response -> {
+                                        try{
+                                            String description1 = response.getString("description");
+                                            String item_cost = response.getString("cost_price");
+                                            String item_sell = response.getString("sell_price");
+                                            list_data.get(getBindingAdapterPosition()).setDescription(description1);
+                                            list_data.get(getBindingAdapterPosition()).setSell_price(item_sell);
+                                            list_data.get(getBindingAdapterPosition()).setCost_price(item_cost);
+                                            notifyItemChanged(getBindingAdapterPosition());
+                                            notifyDataSetChanged();
+                                            Log.i("item" , "data"+list_data);
+                                            Toast.makeText(mContext,"Item Updated", Toast.LENGTH_LONG).show();
+                                        }catch (JSONException e){
+                                            e.printStackTrace();
                                         }
-                                    };
+                                    },
+                                    error -> {
+                                        // Do something when error occurred
+                                        Log.e("error :","update failed");
+                                    });
+//                                    {
+//                                        @Override
+//                                        public Map<String, String> getHeaders() {
+//                                            Map<String, String> params = new HashMap<String, String>();
+//                                            params.put("Authorization", "Bearer " + accessToken);
+//                                            return params;
+//                                        }
+//                                    };
 
-                                    // Add JsonObjectRequest to the RequestQueue
-                                    requestQueue.add(jsonObjectRequest);
-                                }
-                            });
-                    AlertDialog dialog= builder.create();
-                    dialog.show();
-                }
+                            // Add JsonObjectRequest to the RequestQueue
+                            requestQueue1.add(jsonObjectRequest1);
+                        });
+                AlertDialog dialog= builder.create();
+                dialog.show();
             });
             txtDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -293,8 +281,7 @@ public class SwipeAdapter extends RecyclerView.Adapter<SwipeAdapter.SwipeViewHol
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("name",list_data.getDescription());
                     intent.putExtra("imageurl",urlPhoto + list_data.getImage());
-//                    view.getContext().startActivity(intent);
-//                    mContext.startActivity(intent);
+//
                     mContext.startActivity(intent);
                 }
             });

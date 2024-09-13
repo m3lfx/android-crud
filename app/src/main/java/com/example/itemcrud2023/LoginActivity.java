@@ -30,7 +30,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button mLogin;
     private EditText mEmail;
     private EditText mPassword;
-    private String mJSONURLString = "http://172.34.97.101:4000/api/login";
+//    private String mJSONURLString = "http://172.34.97.101:4000/api/login";
+    private String mJSONURLString = "http://192.168.1.11:4000/api/login";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

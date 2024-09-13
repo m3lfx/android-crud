@@ -32,7 +32,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ListItemActivity extends AppCompatActivity {
-    private static final String urlString = "http://172.34.97.101:4000/api/item";
+//    private static final String urlString = "http://172.34.97.101:4000/api/item";
+    private static final String urlString = "http://172.34.95.235:8000/api/items";
 
     private List<Item> item_list;
     private RecyclerView rv;
@@ -55,7 +56,7 @@ public class ListItemActivity extends AppCompatActivity {
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         item_list = new ArrayList<>();
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        swipeContainer = findViewById(R.id.swipeContainer);
         getItemData();
         swipeContainer.setOnRefreshListener(() -> {
             getItemData();
@@ -84,11 +85,12 @@ public class ListItemActivity extends AppCompatActivity {
                     item_list.add(listData);
                 }
 //                adapter = new myAdapter(mContext, item_list);
-//                swipeAdapter = new SwipeAdapter(mContext, item_list);
-//                rv.setAdapter(adapter);
+                swipeAdapter = new SwipeAdapter(mContext, item_list);
+                rv.setAdapter(adapter);
                 Intent i=getIntent();
                  accessToken = i.getStringExtra("access_token");
-                swipeAdapter = new SwipeAdapter(mContext, item_list, accessToken);
+//                swipeAdapter = new SwipeAdapter(mContext, item_list, accessToken);
+                swipeAdapter = new SwipeAdapter(mContext, item_list);
                 rv.setAdapter(swipeAdapter);
 
                 swipeContainer.setRefreshing(false);
